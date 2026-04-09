@@ -3,53 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #1e130c, #9a8478);
-            font-family: 'Inter', sans-serif;
-            color: #ffffff;
-            overflow: hidden;
-        }
-
-        .container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            margin: 0;
-            background: linear-gradient(to right, #e0eafc, #cfdef3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 4px 10px rgba(0,0,0,0.1);
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-    </style>
+    <title>About Me | John Doe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Hello World</h1>
-    </div>
+    <header>
+        <nav>
+            <a href="index.html" class="active">About</a>
+            <a href="publications.html">Publications</a>
+            <a href="projects.html">Projects</a>
+            <a href="blog.html">Blog</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>John Doe, Ph.D.</h1>
+        <p class="bio">
+            Hello! I am a researcher and academic focusing on the intersection of artificial intelligence and sustainable energy systems. 
+            Currently, I am a Postdoctoral Researcher at the Institute of Advanced Technologies. My work seeks to find efficient
+            computing solutions for renewable energy optimization grids.
+        </p>
+
+        <h2>Research Interests</h2>
+        <ul>
+            <li>Machine Learning & Artificial Intelligence</li>
+            <li>Energy Grids & Sustainable Computing</li>
+            <li>Optimization Algorithms</li>
+            <li>Data-Driven Policy Making</li>
+        </ul>
+
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:johndoe@example.com">johndoe@example.com</a></p>
+        <p>Office: Engineering Building, Room 402, Tech University</p>
+        <p>Connect: <a href="https://github.com/YoungFelaKuti">GitHub</a> | <a href="#">Google Scholar</a> | <a href="#">Twitter</a></p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 John Doe. Built with HTML & CSS.</p>
+    </footer>
 </body>
 </html>

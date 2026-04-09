@@ -1,0 +1,143 @@
+body {
+  font-family: 'Merriweather', serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background-color: #fafafa;
+}
+
+header {
+  background: #111;
+  color: #fff;
+  padding: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+nav a {
+  color: #ddd;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+nav a:hover, nav a.active {
+  color: #fff;
+  border-bottom: 2px solid #5a8bbd;
+}
+
+main {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+  border-radius: 8px;
+  padding: 3rem;
+  min-height: 60vh;
+}
+
+h1, h2, h3 {
+  color: #222;
+  margin-top: 1.5rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.7rem;
+  margin-top: 2rem;
+}
+
+a {
+  color: #336699;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #1a3c5e;
+}
+
+.bio {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.item-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item-list li {
+  background: #fdfdfd;
+  border-left: 4px solid #336699;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0 6px 6px 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-list li:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.item-title {
+  font-weight: bolder;
+  font-size: 1.15rem;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.item-meta {
+  color: #666;
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Blog styles */
+.blog-post {
+  margin-bottom: 3rem;
+}
+
+.blog-date {
+  color: #888;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  margin-top: 4rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #777;
+  border-top: 1px solid #eaeaea;
+}

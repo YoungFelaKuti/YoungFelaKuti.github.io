@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>China-Africa Diplomatic Visits (1998-2020) | John Doe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- D3.js for data fetching/parsing -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-description {
+            font-size: 1.1em;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .chart-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            flex: 1 1 500px;
+        }
+
+        #map-container {
+            height: 500px;
+            width: 100%;
+        }
+
+        #timeline-container {
+            height: 400px;
+            width: 100%;
+        }
+
+        .metrics-card {
+            flex: 1 1 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .metric-item {
+            background: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px 20px;
+            border-radius: 4px;
+        }
+
+        .metric-title {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .country-selector {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">About</a>
+            <a href="publications.html">Publications</a>
+            <a href="projects.html" class="active">Projects</a>
+            <a href="blog.html">Blog</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>China-Africa Diplomatic Visits (1998–2020)</h1>
+            <p class="dashboard-description">
+                An interactive exploration of high-level diplomatic engagements from China to African nations. 
+                Using data collected between 1998 and 2020, this dashboard visualizes the frequency and regional distribution 
+                of visits by top Chinese leadership, alongside metrics highlighting the temporal gap since the last high-level encounter.
+            </p>
+        </div>
+
+        <div id="loading" class="loading">Loading dataset and initializing dashboard...</div>
+
+        <div id="dashboard-content" style="display: none;">
+            <div class="chart-row">
+                <div class="chart-card" style="flex: 2 1 600px;">
+                    <h2 style="margin-top:0">Total Visits Map</h2>
+                    <div id="map-container"></div>
+                </div>
+                <div class="chart-card metrics-card">
+                    <h2 style="margin-top:0">Country Insights</h2>
+                    <select id="country-select" class="country-selector">
+                        <option value="">Select a country...</option>
+                    </select>
+
+                    <div class="metric-item">
+                        <div class="metric-title">Total Visits (1998-2020)</div>
+                        <div id="metric-total-visits" class="metric-value">-</div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-title">Last Visited Date</div>
+                        <div id="metric-last-visit-date" class="metric-value">-</div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-title">Days Since Last Visit (relative to Dec 31, 2020)</div>
+                        <div id="metric-days-since" class="metric-value">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-card">
+                    <h2 style="margin-top:0">Visits Timeline by Era</h2>
+                    <div id="timeline-container"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 John Doe. Data sourced from Wang & Stone (2023).</p>
+    </footer>
+
+    <script>
+        const AFRICAN_ISOS = [
+            "DZA", "AGO", "BEN", "BWA", "BFA", "BDI", "CPV", "CMR", "CAF", "TCD", 
+            "COM", "COG", "COD", "DJI", "EGY", "GNQ", "ERI", "SWZ", "ETH", "GAB", 
+            "GMB", "GHA", "GIN", "GNB", "CIV", "KEN", "LSO", "LBR", "LBY", "MDG", 
+            "MWI", "MLI", "MRT", "MUS", "MAR", "MOZ", "NAM", "NER", "NGA", "RWA", 
+            "STP", "SEN", "SYC", "SLE", "SOM", "ZAF", "SSD", "SDN", "TZA", "TGO", 
+            "TUN", "UGA", "ZMB", "ZWE"
+        ];
+
+        function determineEra(year) {
+            if (year <= 2002) return "Jiang Zemin Era";
+            if (year <= 2012) return "Hu Jintao Era";
+            return "Xi Jinping Era";
+        }
+
+        function calculateDaysDifference(dateString1, dateString2) {
+            const date1 = new Date(dateString1);
+            const date2 = new Date(dateString2);
+            if (isNaN(date1) || isNaN(date2)) return null;
+            const diffTime = Math.abs(date2 - date1);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        }
+
+        d3.csv('china_visits.csv').then(data => {
+            // Filter to African nations
+            const africaData = data.filter(d => AFRICAN_ISOS.includes(d.ccode));
+
+            // Process for Map (Total visits per country)
+            const visitCountsMap = new Map();
+            africaData.forEach(d => {
+                const count = visitCountsMap.get(d.ccode) || 0;
+                visitCountsMap.set(d.ccode, count + 1);
+            });
+
+            const mapLocations = [];
+            const mapZ = [];
+            const mapHoverText = [];
+            // We'll create a mapping to populate country selector too
+            const countryMeta = new Map();
+
+            africaData.forEach(d => {
+                if (!countryMeta.has(d.ccode)) {
+                    countryMeta.set(d.ccode, d.country);
+                }
+            });
+
+            // Iterate over all african ISOs to ensure countries with 0 visits appear
+            AFRICAN_ISOS.forEach(iso => {
+                mapLocations.push(iso);
+                const visits = visitCountsMap.get(iso) || 0;
+                mapZ.push(visits);
+                let cName = countryMeta.get(iso) || iso;
+                mapHoverText.push(`${cName}: ${visits} Visit(s)`);
+            });
+
+            // Map data
+            const mapData = [{
+                type: 'choropleth',
+                locations: mapLocations,
+                z: mapZ,
+                text: mapHoverText,
+                colorscale: 'YlOrRd',
+                reversescale: false,
+                marker: {
+                    line: {
+                        color: 'rgb(180,180,180)',
+                        width: 0.5
+                    }
+                },
+                colorbar: {
+                    title: 'Visits'
+                }
+            }];
+
+            const mapLayout = {
+                geo: {
+                    scope: 'africa',
+                    showframe: false,
+                    showcoastlines: true,
+                    projection: {
+                        type: 'mercator'
+                    }
+                },
+                margin: { l: 0, r: 0, t: 0, b: 0 }
+            };
+
+            Plotly.newPlot('map-container', mapData, mapLayout, {responsive: true});
+
+            // Process for Timeline
+            // Group by year and era
+            // Actually, we can count visits per year. We'll color by Era
+            const timelineDataMap = new Map();
+            africaData.forEach(d => {
+                const era = determineEra(d.year);
+                if (!timelineDataMap.has(era)) timelineDataMap.set(era, new Map());
+                const eraMap = timelineDataMap.get(era);
+                
+                const count = eraMap.get(d.year) || 0;
+                eraMap.set(d.year, count + 1);
+            });
+
+            const eras = ["Jiang Zemin Era", "Hu Jintao Era", "Xi Jinping Era"];
+            const eraColors = {
+                "Jiang Zemin Era": "#3498db",
+                "Hu Jintao Era": "#2ecc71",
+                "Xi Jinping Era": "#e74c3c"
+            };
+
+            const timelinePlotData = eras.map(era => {
+                const eraMap = timelineDataMap.get(era) || new Map();
+                const x = Array.from(eraMap.keys()).sort();
+                const y = x.map(year => eraMap.get(year));
+                return {
+                    x: x,
+                    y: y,
+                    name: era,
+                    type: 'bar',
+                    marker: { color: eraColors[era] }
+                };
+            });
+
+            const timelineLayout = {
+                barmode: 'stack',
+                xaxis: { title: 'Year', dtick: 1 },
+                yaxis: { title: 'Number of Visits' },
+                margin: { l: 50, r: 20, t: 30, b: 50 }
+            };
+
+            Plotly.newPlot('timeline-container', timelinePlotData, timelineLayout, {responsive: true});
+
+            // Setup Country Selector and Analytics logic
+            const countryArray = Array.from(countryMeta.keys()).map(iso => ({
+                iso: iso,
+                name: countryMeta.get(iso)
+            })).sort((a,b) => a.name.localeCompare(b.name));
+
+            const selector = document.getElementById('country-select');
+            countryArray.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.iso;
+                opt.textContent = c.name;
+                selector.appendChild(opt);
+            });
+
+            selector.addEventListener('change', (e) => {
+                const iso = e.target.value;
+                if (!iso) {
+                    document.getElementById('metric-total-visits').textContent = '-';
+                    document.getElementById('metric-last-visit-date').textContent = '-';
+                    document.getElementById('metric-days-since').textContent = '-';
+                    return;
+                }
+
+                const visits = africaData.filter(d => d.ccode === iso);
+                document.getElementById('metric-total-visits').textContent = visits.length;
+
+                if (visits.length === 0) {
+                    document.getElementById('metric-last-visit-date').textContent = 'Never visited';
+                    document.getElementById('metric-days-since').textContent = 'N/A';
+                } else {
+                    // find latest
+                    let latestDate = null;
+                    visits.forEach(v => {
+                        // Use end date if available, otherwise start 
+                        let dStr = v.end || v.start;
+                        if (!dStr && v.year) dStr = `${v.year}-12-31`; // fallback
+                        const d = new Date(dStr);
+                        if (!isNaN(d) && (!latestDate || d > latestDate)) {
+                            latestDate = d;
+                        }
+                    });
+
+                    if (latestDate) {
+                        document.getElementById('metric-last-visit-date').textContent = latestDate.toLocaleDateString();
+                        const daysSince = calculateDaysDifference(latestDate, "2020-12-31");
+                        document.getElementById('metric-days-since').textContent = daysSince + ' days';
+                    } else {
+                        document.getElementById('metric-last-visit-date').textContent = 'Unknown / Date Parse Error';
+                        document.getElementById('metric-days-since').textContent = '-';
+                    }
+                }
+            });
+
+            // Hide loading, show content
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+
+        }).catch(err => {
+            document.getElementById('loading').innerHTML = `Error loading data: ${err.message}. Please make sure 'china_visits.csv' is available on the server.`;
+            document.getElementById('loading').style.color = '#e74c3c';
+        });
+    </script>
+</body>
+</html>

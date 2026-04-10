@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>China-Africa Diplomatic Visits & Finance | John Doe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap"
+        rel="stylesheet">
     <!-- Base styles for the main site -->
     <link rel="stylesheet" href="style.css">
     <!-- Plotly.js -->
@@ -30,7 +33,7 @@
             transition: color 0.3s;
         }
 
-        body.dark-dashboard header nav a:hover, 
+        body.dark-dashboard header nav a:hover,
         body.dark-dashboard header nav a.active {
             color: #38bdf8;
             background: none;
@@ -50,12 +53,12 @@
         }
 
         .dashboard-header h1 {
-            color: #f8fafc;
+            color: #0f172a;
         }
 
         .dashboard-description {
             font-size: 1.1em;
-            color: #94a3b8;
+            color: #0f172a;
             max-width: 800px;
             margin: 0 auto 30px;
             line-height: 1.6;
@@ -71,7 +74,7 @@
         .chart-card {
             background: #1e293b;
             border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
             padding: 24px;
             flex: 1 1 500px;
             border: 1px solid #334155;
@@ -97,7 +100,7 @@
             flex-direction: column;
             gap: 15px;
         }
-        
+
         .metric-item {
             background: #0f172a;
             border-left: 4px solid #06b6d4;
@@ -119,7 +122,7 @@
             font-weight: 700;
             color: #e0e7ff;
         }
-        
+
         .country-selector {
             padding: 12px;
             font-size: 1.05em;
@@ -184,6 +187,7 @@
         }
     </style>
 </head>
+
 <body class="dark-dashboard">
     <header>
         <nav>
@@ -198,8 +202,10 @@
         <div class="dashboard-header">
             <h1>China-Africa Diplomatic Visits & Official Finance</h1>
             <p class="dashboard-description">
-                An interactive exploration of high-level diplomatic engagements and financial commitments from China to African nations. 
-                Use the map layered controls below to toggle between exploring diplomatic visits and official financial flows.
+                An interactive exploration of high-level diplomatic engagements and financial commitments from China to
+                African nations.
+                Use the map layered controls below to toggle between exploring diplomatic visits and official financial
+                flows.
             </p>
         </div>
 
@@ -259,11 +265,11 @@
 
     <script>
         const AFRICAN_ISOS = [
-            "DZA", "AGO", "BEN", "BWA", "BFA", "BDI", "CPV", "CMR", "CAF", "TCD", 
-            "COM", "COG", "COD", "DJI", "EGY", "GNQ", "ERI", "SWZ", "ETH", "GAB", 
-            "GMB", "GHA", "GIN", "GNB", "CIV", "KEN", "LSO", "LBR", "LBY", "MDG", 
-            "MWI", "MLI", "MRT", "MUS", "MAR", "MOZ", "NAM", "NER", "NGA", "RWA", 
-            "STP", "SEN", "SYC", "SLE", "SOM", "ZAF", "SSD", "SDN", "TZA", "TGO", 
+            "DZA", "AGO", "BEN", "BWA", "BFA", "BDI", "CPV", "CMR", "CAF", "TCD",
+            "COM", "COG", "COD", "DJI", "EGY", "GNQ", "ERI", "SWZ", "ETH", "GAB",
+            "GMB", "GHA", "GIN", "GNB", "CIV", "KEN", "LSO", "LBR", "LBY", "MDG",
+            "MWI", "MLI", "MRT", "MUS", "MAR", "MOZ", "NAM", "NER", "NGA", "RWA",
+            "STP", "SEN", "SYC", "SLE", "SOM", "ZAF", "SSD", "SDN", "TZA", "TGO",
             "TUN", "UGA", "ZMB", "ZWE"
         ];
 
@@ -278,7 +284,7 @@
             const date2 = new Date(dateString2);
             if (isNaN(date1) || isNaN(date2)) return null;
             const diffTime = Math.abs(date2 - date1);
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
         Promise.all([
@@ -359,7 +365,7 @@
                     // Non-linear scaling for area 
                     const scaledSize = Math.max(5, Math.sqrt(amt) / Math.sqrt(maxAmount) * 45);
                     financeSizes.push(scaledSize);
-                    
+
                     let moneyStr = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 3, notation: "compact", compactDisplay: "short" }).format(amt);
                     financeHoverText.push(`${d.recipient}: ${moneyStr} in Official Finance`);
                 }
@@ -412,7 +418,7 @@
                 ]
             };
 
-            Plotly.newPlot('map-container', [traceVisits, traceFinance], mapLayout, {responsive: true});
+            Plotly.newPlot('map-container', [traceVisits, traceFinance], mapLayout, { responsive: true });
 
             // 3. Map Toggles Layer Logic
             const toggleButtons = document.querySelectorAll('.map-toggle-btn');
@@ -438,7 +444,7 @@
                 const era = determineEra(d.year);
                 if (!timelineDataMap.has(era)) timelineDataMap.set(era, new Map());
                 const eraMap = timelineDataMap.get(era);
-                
+
                 const count = eraMap.get(d.year) || 0;
                 eraMap.set(d.year, count + 1);
             });
@@ -468,19 +474,19 @@
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 font: { color: '#cbd5e1' },
-                xaxis: { 
-                    title: 'Year', 
+                xaxis: {
+                    title: 'Year',
                     dtick: 1,
                     gridcolor: '#334155',
                     linecolor: '#334155'
                 },
-                yaxis: { 
+                yaxis: {
                     title: 'Number of Visits',
                     gridcolor: '#334155',
                     linecolor: '#334155'
                 },
                 margin: { l: 50, r: 20, t: 30, b: 50 },
-                legend: { font: { color: '#f8fafc'} },
+                legend: { font: { color: '#f8fafc' } },
                 shapes: [
                     {
                         type: 'rect',
@@ -513,13 +519,13 @@
                 ]
             };
 
-            Plotly.newPlot('timeline-container', timelinePlotData, timelineLayout, {responsive: true});
+            Plotly.newPlot('timeline-container', timelinePlotData, timelineLayout, { responsive: true });
 
             // 5. Setup Country Selector and Analytics logic
             const countryArray = Array.from(countryMeta.keys()).map(iso => ({
                 iso: iso,
                 name: countryMeta.get(iso)
-            })).sort((a,b) => a.name.localeCompare(b.name));
+            })).sort((a, b) => a.name.localeCompare(b.name));
 
             const selector = document.getElementById('country-select');
             countryArray.forEach(c => {
@@ -536,15 +542,15 @@
                     document.getElementById('metric-last-visit-date').textContent = '-';
                     document.getElementById('metric-days-since').textContent = '-';
                     document.getElementById('metric-total-finance').textContent = '-';
-                    Plotly.restyle('map-container', {'selectedpoints': null}, [0, 1]);
+                    Plotly.restyle('map-container', { 'selectedpoints': null }, [0, 1]);
                     return;
                 }
 
                 const visitIndex = mapLocations.indexOf(iso);
                 const financeIndex = financeLocations.indexOf(iso);
-                
-                Plotly.restyle('map-container', {'selectedpoints': [visitIndex !== -1 ? [visitIndex] : []]}, [0]);
-                Plotly.restyle('map-container', {'selectedpoints': [financeIndex !== -1 ? [financeIndex] : []]}, [1]);
+
+                Plotly.restyle('map-container', { 'selectedpoints': [visitIndex !== -1 ? [visitIndex] : []] }, [0]);
+                Plotly.restyle('map-container', { 'selectedpoints': [financeIndex !== -1 ? [financeIndex] : []] }, [1]);
 
                 const visits = africaData.filter(d => d.ccode === iso);
                 document.getElementById('metric-total-visits').textContent = visits.length;
@@ -591,4 +597,5 @@
         });
     </script>
 </body>
+
 </html>

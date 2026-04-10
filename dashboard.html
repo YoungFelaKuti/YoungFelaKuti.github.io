@@ -3,14 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>China-Africa Diplomatic Visits (1998-2020) | John Doe</title>
+    <title>China-Africa Diplomatic Visits & Finance | John Doe</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- Base styles for the main site -->
     <link rel="stylesheet" href="style.css">
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <!-- D3.js for data fetching/parsing -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        /* Dark Theme Scoped Overrides */
+        body.dark-dashboard {
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.dark-dashboard header {
+            background-color: #1e293b;
+            border-bottom: 1px solid #334155;
+        }
+
+        body.dark-dashboard header nav a {
+            color: #cbd5e1;
+            transition: color 0.3s;
+        }
+
+        body.dark-dashboard header nav a:hover, 
+        body.dark-dashboard header nav a.active {
+            color: #38bdf8;
+            background: none;
+            border-bottom: 2px solid #38bdf8;
+        }
+
         .dashboard-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -20,11 +46,16 @@
         .dashboard-header {
             text-align: center;
             margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        .dashboard-header h1 {
+            color: #f8fafc;
         }
 
         .dashboard-description {
             font-size: 1.1em;
-            color: #555;
+            color: #94a3b8;
             max-width: 800px;
             margin: 0 auto 30px;
             line-height: 1.6;
@@ -38,15 +69,20 @@
         }
 
         .chart-card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            padding: 20px;
+            background: #1e293b;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            padding: 24px;
             flex: 1 1 500px;
+            border: 1px solid #334155;
+        }
+
+        .chart-card h2 {
+            color: #f8fafc;
         }
 
         #map-container {
-            height: 500px;
+            height: 550px;
             width: 100%;
         }
 
@@ -63,45 +99,92 @@
         }
         
         .metric-item {
-            background: #f8f9fa;
-            border-left: 4px solid #2c3e50;
+            background: #0f172a;
+            border-left: 4px solid #06b6d4;
             padding: 15px 20px;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
         .metric-title {
-            font-size: 0.9em;
-            color: #666;
+            font-size: 0.85em;
+            color: #94a3b8;
             margin-bottom: 5px;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .metric-value {
-            font-size: 1.8em;
+            font-size: 2em;
             font-weight: 700;
-            color: #2c3e50;
+            color: #e0e7ff;
         }
         
         .country-selector {
-            padding: 10px;
-            font-size: 1em;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            font-size: 1.05em;
+            background-color: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            border-radius: 8px;
             width: 100%;
             margin-bottom: 20px;
             font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .country-selector:focus {
+            border-color: #38bdf8;
         }
 
         .loading {
             text-align: center;
             font-size: 1.2em;
-            color: #666;
+            color: #94a3b8;
             padding: 50px;
+        }
+
+        .map-toggles {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .map-toggle-btn {
+            padding: 10px 20px;
+            border: 1px solid #06b6d4;
+            background: transparent;
+            color: #06b6d4;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .map-toggle-btn.active {
+            background: #06b6d4;
+            color: #0f172a;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+        }
+
+        .map-toggle-btn:hover:not(.active) {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        body.dark-dashboard footer {
+            background-color: #1e293b;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            text-align: center;
+            padding: 20px;
         }
     </style>
 </head>
-<body>
+<body class="dark-dashboard">
     <header>
         <nav>
             <a href="index.html">About</a>
@@ -113,26 +196,30 @@
 
     <main class="dashboard-container">
         <div class="dashboard-header">
-            <h1>China-Africa Diplomatic Visits (1998–2020)</h1>
+            <h1>China-Africa Diplomatic Visits & Official Finance</h1>
             <p class="dashboard-description">
-                An interactive exploration of high-level diplomatic engagements from China to African nations. 
-                Using data collected between 1998 and 2020, this dashboard visualizes the frequency and regional distribution 
-                of visits by top Chinese leadership, alongside metrics highlighting the temporal gap since the last high-level encounter.
+                An interactive exploration of high-level diplomatic engagements and financial commitments from China to African nations. 
+                Use the map layered controls below to toggle between exploring diplomatic visits and official financial flows.
             </p>
         </div>
 
-        <div id="loading" class="loading">Loading dataset and initializing dashboard...</div>
+        <div id="loading" class="loading">Loading datasets and initializing dashboard...</div>
 
         <div id="dashboard-content" style="display: none;">
             <div class="chart-row">
                 <div class="chart-card" style="flex: 2 1 600px;">
-                    <h2 style="margin-top:0">Total Visits Map</h2>
+                    <h2 style="margin-top:0; text-align: center;">Geographic Overview</h2>
+                    <div class="map-toggles">
+                        <button class="map-toggle-btn active" data-layer="visits">Diplomatic Visits</button>
+                        <button class="map-toggle-btn" data-layer="finance">Finance Commitments</button>
+                        <button class="map-toggle-btn" data-layer="combined">Combined Overlay</button>
+                    </div>
                     <div id="map-container"></div>
                 </div>
                 <div class="chart-card metrics-card">
                     <h2 style="margin-top:0">Country Insights</h2>
                     <select id="country-select" class="country-selector">
-                        <option value="">Select a country...</option>
+                        <option value="">See all</option>
                     </select>
 
                     <div class="metric-item">
@@ -141,12 +228,17 @@
                     </div>
 
                     <div class="metric-item">
+                        <div class="metric-title">Total Finance Appxd (2000-2013)</div>
+                        <div id="metric-total-finance" class="metric-value">-</div>
+                    </div>
+
+                    <div class="metric-item">
                         <div class="metric-title">Last Visited Date</div>
                         <div id="metric-last-visit-date" class="metric-value">-</div>
                     </div>
 
                     <div class="metric-item">
-                        <div class="metric-title">Days Since Last Visit (relative to Dec 31, 2020)</div>
+                        <div class="metric-title">Days Since Last Visit (via Dec 31, 2020)</div>
                         <div id="metric-days-since" class="metric-value">-</div>
                     </div>
                 </div>
@@ -162,7 +254,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 John Doe. Data sourced from Wang & Stone (2023).</p>
+        <p>&copy; 2026 John Doe. Data sourced from AidData & Wang & Stone (2023).</p>
     </footer>
 
     <script>
@@ -189,11 +281,15 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
         }
 
-        d3.csv('china_visits.csv').then(data => {
-            // Filter to African nations
-            const africaData = data.filter(d => AFRICAN_ISOS.includes(d.ccode));
+        Promise.all([
+            d3.csv('china_visits.csv'),
+            d3.csv('china_finance.csv')
+        ]).then(data => {
+            const parsedVisitsData = data[0];
+            const parsedFinanceData = data[1];
 
-            // Process for Map (Total visits per country)
+            // 1. Process Visits
+            const africaData = parsedVisitsData.filter(d => AFRICAN_ISOS.includes(d.ccode));
             const visitCountsMap = new Map();
             africaData.forEach(d => {
                 const count = visitCountsMap.get(d.ccode) || 0;
@@ -203,7 +299,6 @@
             const mapLocations = [];
             const mapZ = [];
             const mapHoverText = [];
-            // We'll create a mapping to populate country selector too
             const countryMeta = new Map();
 
             africaData.forEach(d => {
@@ -212,7 +307,6 @@
                 }
             });
 
-            // Iterate over all african ISOs to ensure countries with 0 visits appear
             AFRICAN_ISOS.forEach(iso => {
                 mapLocations.push(iso);
                 const visits = visitCountsMap.get(iso) || 0;
@@ -221,42 +315,124 @@
                 mapHoverText.push(`${cName}: ${visits} Visit(s)`);
             });
 
-            // Map data
-            const mapData = [{
+            const traceVisits = {
                 type: 'choropleth',
                 locations: mapLocations,
                 z: mapZ,
                 text: mapHoverText,
-                colorscale: 'YlOrRd',
+                colorscale: 'Plasma', // Dark-mode friendly
                 reversescale: false,
                 marker: {
                     line: {
-                        color: 'rgb(180,180,180)',
-                        width: 0.5
+                        color: '#0f172a',
+                        width: 1
                     }
                 },
                 colorbar: {
-                    title: 'Visits'
+                    title: 'Visits',
+                    tickfont: { color: '#cbd5e1' },
+                    titlefont: { color: '#cbd5e1' }
+                },
+                hoverinfo: 'location+text',
+                name: 'Diplomatic Visits',
+                visible: true
+            };
+
+            // 2. Process Finance
+            const financeData = parsedFinanceData.filter(d => AFRICAN_ISOS.includes(d.ccode));
+            const financeLocations = [];
+            const financeSizes = [];
+            const financeHoverText = [];
+            const financeByCountryMap = new Map();
+
+            let maxAmount = 0;
+            financeData.forEach(d => {
+                let amt = parseFloat(d.amount) || 0;
+                if (amt > maxAmount) maxAmount = amt;
+            });
+
+            financeData.forEach(d => {
+                let amt = parseFloat(d.amount) || 0;
+                financeByCountryMap.set(d.ccode, amt);
+                if (amt > 0) {
+                    financeLocations.push(d.ccode);
+                    // Non-linear scaling for area 
+                    const scaledSize = Math.max(5, Math.sqrt(amt) / Math.sqrt(maxAmount) * 45);
+                    financeSizes.push(scaledSize);
+                    
+                    let moneyStr = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 3, notation: "compact", compactDisplay: "short" }).format(amt);
+                    financeHoverText.push(`${d.recipient}: ${moneyStr} in Official Finance`);
                 }
-            }];
+            });
+
+            const traceFinance = {
+                type: 'scattergeo',
+                locations: financeLocations,
+                text: financeHoverText,
+                marker: {
+                    size: financeSizes,
+                    color: 'rgba(6, 182, 212, 0.65)', // Bright Neon Cyan
+                    line: { color: '#22d3ee', width: 2 } // Solid Neon Outline
+                },
+                hoverinfo: 'text',
+                name: 'Finance Commitments',
+                visible: false // Hidden by default
+            };
 
             const mapLayout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#cbd5e1' },
                 geo: {
                     scope: 'africa',
+                    bgcolor: 'rgba(0,0,0,0)',
                     showframe: false,
                     showcoastlines: true,
+                    coastlinecolor: '#1e293b',
+                    showland: true,
+                    landcolor: '#334155',
+                    showocean: true,
+                    oceancolor: '#0f172a',
+                    showlakes: true,
+                    lakecolor: '#0f172a',
                     projection: {
                         type: 'mercator'
                     }
                 },
-                margin: { l: 0, r: 0, t: 0, b: 0 }
+                margin: { l: 0, r: 0, t: 20, b: 30 },
+                annotations: [
+                    {
+                        x: 0, y: -0.05,
+                        xref: 'paper', yref: 'paper',
+                        text: '<b>Note:</b> Visits spanning 1998–2020; Finance spanning 2000–2013.',
+                        showarrow: false,
+                        xanchor: 'left', yanchor: 'top',
+                        font: { size: 12, color: '#94a3b8' }
+                    }
+                ]
             };
 
-            Plotly.newPlot('map-container', mapData, mapLayout, {responsive: true});
+            Plotly.newPlot('map-container', [traceVisits, traceFinance], mapLayout, {responsive: true});
 
-            // Process for Timeline
-            // Group by year and era
-            // Actually, we can count visits per year. We'll color by Era
+            // 3. Map Toggles Layer Logic
+            const toggleButtons = document.querySelectorAll('.map-toggle-btn');
+            toggleButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    toggleButtons.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    const layerType = e.target.getAttribute('data-layer');
+                    if (layerType === 'visits') {
+                        Plotly.restyle('map-container', 'visible', [true, false]);
+                    } else if (layerType === 'finance') {
+                        Plotly.restyle('map-container', 'visible', [false, true]);
+                    } else if (layerType === 'combined') {
+                        Plotly.restyle('map-container', 'visible', [true, true]);
+                    }
+                });
+            });
+
+            // 4. Process for Timeline
             const timelineDataMap = new Map();
             africaData.forEach(d => {
                 const era = determineEra(d.year);
@@ -269,9 +445,9 @@
 
             const eras = ["Jiang Zemin Era", "Hu Jintao Era", "Xi Jinping Era"];
             const eraColors = {
-                "Jiang Zemin Era": "#3498db",
-                "Hu Jintao Era": "#2ecc71",
-                "Xi Jinping Era": "#e74c3c"
+                "Jiang Zemin Era": "#0ea5e9", // Sky Blue
+                "Hu Jintao Era": "#10b981",   // Emerald
+                "Xi Jinping Era": "#f43f5e"   // Rose
             };
 
             const timelinePlotData = eras.map(era => {
@@ -289,14 +465,57 @@
 
             const timelineLayout = {
                 barmode: 'stack',
-                xaxis: { title: 'Year', dtick: 1 },
-                yaxis: { title: 'Number of Visits' },
-                margin: { l: 50, r: 20, t: 30, b: 50 }
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#cbd5e1' },
+                xaxis: { 
+                    title: 'Year', 
+                    dtick: 1,
+                    gridcolor: '#334155',
+                    linecolor: '#334155'
+                },
+                yaxis: { 
+                    title: 'Number of Visits',
+                    gridcolor: '#334155',
+                    linecolor: '#334155'
+                },
+                margin: { l: 50, r: 20, t: 30, b: 50 },
+                legend: { font: { color: '#f8fafc'} },
+                shapes: [
+                    {
+                        type: 'rect',
+                        xref: 'x', yref: 'paper',
+                        x0: 1997.5, x1: 2013.5,
+                        y0: 0, y1: 1,
+                        fillcolor: 'rgba(6, 182, 212, 0.1)',
+                        line: { width: 0 },
+                        layer: 'below'
+                    },
+                    {
+                        type: 'line',
+                        xref: 'x', yref: 'paper',
+                        x0: 2013.5, x1: 2013.5,
+                        y0: 0, y1: 1,
+                        line: { color: '#f8fafc', width: 2, dash: 'dash' }
+                    }
+                ],
+                annotations: [
+                    {
+                        x: 2013.5, y: 1,
+                        xref: 'x', yref: 'paper',
+                        text: '     Finance Data Ends',
+                        showarrow: false,
+                        xanchor: 'left', yanchor: 'top',
+                        font: { color: '#f8fafc', size: 11 },
+                        textangle: -90,
+                        xshift: 0
+                    }
+                ]
             };
 
             Plotly.newPlot('timeline-container', timelinePlotData, timelineLayout, {responsive: true});
 
-            // Setup Country Selector and Analytics logic
+            // 5. Setup Country Selector and Analytics logic
             const countryArray = Array.from(countryMeta.keys()).map(iso => ({
                 iso: iso,
                 name: countryMeta.get(iso)
@@ -316,20 +535,34 @@
                     document.getElementById('metric-total-visits').textContent = '-';
                     document.getElementById('metric-last-visit-date').textContent = '-';
                     document.getElementById('metric-days-since').textContent = '-';
+                    document.getElementById('metric-total-finance').textContent = '-';
+                    Plotly.restyle('map-container', {'selectedpoints': null}, [0, 1]);
                     return;
                 }
 
+                const visitIndex = mapLocations.indexOf(iso);
+                const financeIndex = financeLocations.indexOf(iso);
+                
+                Plotly.restyle('map-container', {'selectedpoints': [visitIndex !== -1 ? [visitIndex] : []]}, [0]);
+                Plotly.restyle('map-container', {'selectedpoints': [financeIndex !== -1 ? [financeIndex] : []]}, [1]);
+
                 const visits = africaData.filter(d => d.ccode === iso);
                 document.getElementById('metric-total-visits').textContent = visits.length;
+
+                // Finance Data
+                let financeAmt = financeByCountryMap.get(iso) || 0;
+                if (financeAmt === 0) {
+                    document.getElementById('metric-total-finance').textContent = '$0';
+                } else {
+                    document.getElementById('metric-total-finance').textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 3, notation: "compact", compactDisplay: "short" }).format(financeAmt);
+                }
 
                 if (visits.length === 0) {
                     document.getElementById('metric-last-visit-date').textContent = 'Never visited';
                     document.getElementById('metric-days-since').textContent = 'N/A';
                 } else {
-                    // find latest
                     let latestDate = null;
                     visits.forEach(v => {
-                        // Use end date if available, otherwise start 
                         let dStr = v.end || v.start;
                         if (!dStr && v.year) dStr = `${v.year}-12-31`; // fallback
                         const d = new Date(dStr);
@@ -349,13 +582,12 @@
                 }
             });
 
-            // Hide loading, show content
             document.getElementById('loading').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
 
         }).catch(err => {
-            document.getElementById('loading').innerHTML = `Error loading data: ${err.message}. Please make sure 'china_visits.csv' is available on the server.`;
-            document.getElementById('loading').style.color = '#e74c3c';
+            document.getElementById('loading').innerHTML = `Error loading data: ${err.message}. Please make sure 'china_visits.csv' and 'china_finance.csv' are available on the server.`;
+            document.getElementById('loading').style.color = '#ef4444';
         });
     </script>
 </body>
